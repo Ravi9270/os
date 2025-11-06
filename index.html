@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="hi">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Operating System ka assignment</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div class="wrap">
+    <header>
+      <div>
+        <h1>Operating System – ka assignment</h1>
+        <div class="sub">Copy kar k past kar lo लेनदेन valo</div>
+      </div>
+      <div class="bar">
+        <button id="copy-all">Copy All Code</button>
+        <button id="download-html">Download this Webpage (.html)</button>
+        <!--<span class="pill">Tip: Mobile पर लंबे-प्रेस से भी Copy कर सकते हो</span>-->
+      </div>
+    </header>
+    <!-- PRACTICAL 1 -->
+    <section class="card" id="p1">
+      <h2>Practical 1 — Process communication using shared memory</h2>
+      <div class="aim">Aim:
+
+        Understand shared memory concepts in inter-process communication
+
+        Implement producer-consumer synchronization using shared memory and semaphore
+
+        Explore race conditions and how to avoid them</div>
+
+      <div class="codewrap">
+        <div class="codebar">
+          <span class="title">Python — Source Code</span>
+          <div class="copy"><button class="copy-btn" data-target="#code1">Copy</button></div>
+        </div>
+        <pre><code id="code1">from threading import Thread, Semaphore
+
+
+import random, time
+
+full = Semaphore(0) 
+empty = Semaphore(10) 
+mutex = Semaphore(1)
+
+class ProducerThread(Thread): 
+    def init(self, buffer): 
+       Thread.init(self) 
+       self.buffer = buffer
+
+def run(self):
+    while True:
+        empty.acquire()
+        mutex.acquire()
+        num = random.randint(0, 5)
+        self.buffer.append(num)
+        print("Produced:", num)
+        mutex.release()
+        full.release()
+        time.sleep(1)
+
+class ConsumerThread(Thread): 
+      def init(self, buffer): 
+           Thread.init(self) 
+           self.buffer = buffer
+
+def run(self):
+    while True:
+        full.acquire()
+        mutex.acquire()
+        print("Consumed:", self.buffer.pop())
+        mutex.release()
+        empty.release()
+        time.sleep(1)
+
+buffer = []
+ProducerThread(buffer).start() 
+ConsumerThread(buffer).start()</code></pre>
+      </div>
+
+      <div class="codewrap" style="margin-top:12px">
+        <div class="codebar">
+          <span class="title">Sample Output</span>
+          <div class="copy"><button class="copy-btn" data-target="#out1">Copy</button></div>
+        </div>
+        <pre><code id="out1">Produced 1
+
+Consumed 1 Produced 4 Consumed 4 Produced 3 Consumed 3</code></pre>
+      </div>
+    </section>
+
+    <!-- PRACTICAL 2 -->
+    <section class="card" id="p2">
+      <h2>Practical 2 — Process communication using message passing</h2>
+      <div class="aim">Aim:
+
+        Use message queues/pipes to solve producer-consumer problem
+
+        Compare shared memory vs message passing
+
+        Analyze blocking vs non-blocking communication</div>
+
+      <div class="codewrap">
+        <div class="codebar">
+          <span class="title">Python — Source Code</span>
+          <div class="copy"><button class="copy-btn" data-target="#code2">Copy</button></div>
+        </div>
+        <pre><code id="code2">import threading, queue, time
+
+
+def producer(q):
+    for i in range(5):
+        msg = f"Data {i}" 
+        q.put(msg)
+        print("Producer sent:", msg) 
+        time.sleep(1)
+    q.put("DONE")
+
+def consumer(q): 
+    while True: 
+       msg = q.get() 
+       if msg == "DONE":  
+          break 
+    print("Consumer received:", msg)
+
+if name == "main":
+    q = queue.Queue() 
+    t1 = threading.Thread(target=producer, args=(q,))
+    t2 = threading.Thread(target=consumer, args=(q,)) 
+    t1.start()
+    t2.start()
+    t1.join()
+    t2.join()</code></pre>
+      </div>
+
+      <div class="codewrap" style="margin-top:12px">
+        <div class="codebar">
+          <span class="title">Sample Output</span>
+          <div class="copy"><button class="copy-btn" data-target="#out2">Copy</button></div>
+        </div>
+        <pre><code id="out2">Producer sent: Data 0
+
+Consumer received: Data 0 Producer sent: Data 1 Consumer received: Data 1 Producer sent: Data 2 Consumer received: Data 2 Producer sent: Data 3 Consumer received: Data 3 Producer sent: Data 4 Consumer received: Data 4</code></pre>
+      </div>
+    </section>
+
+    <!-- PRACTICAL 3 -->
+    <section class="card" id="p3">
+      <h2>Practical 3 — Threading and Single Thread Control Flow</h2>
+      <div class="aim">Aim:
+
+        Practice thread creation and lifecycle
+
+        Observe execution order, joining, and delays</div>
+
+      <div class="codewrap">
+        <div class="codebar">
+          <span class="title">Python — Source Code</span>
+          <div class="copy"><button class="copy-btn" data-target="#code3">Copy</button></div>
+        </div>
+        <pre><code id="code3">import threading, time
+
+
+def task():
+  print("Start") 
+  time.sleep(2) 
+  print("End")
+
+start = time.time()
+
+t1 = threading.Thread(target=task) 
+t2 = threading.Thread(target=task)
+
+t1.start()
+t2.start()
+
+t1.join()
+t2.join()
+
+print("Threaded Time:", round(time.time() - start, 2))
+
+start = time.time() 
+task() 
+task() 
+print("Sequential Time:", round(time.time() - start, 2))</code></pre>
+      </div>
+
+      <div class="codewrap" style="margin-top:12px">
+        <div class="codebar">
+          <span class="title">Sample Output</span>
+          <div class="copy"><button class="copy-btn" data-target="#out3">Copy</button></div>
+        </div>
+        <pre><code id="out3">Start
+
+Start End End Threaded Time: 2.08 Sequential Time: 4.14</code></pre>
+      </div>
+    </section>
+
+    <!-- PRACTICAL 4 -->
+    <section class="card" id="p4">
+      <h2>Practical 4 — Multi-threading and Fibonacci Generation</h2>
+      <div class="aim">Aim:
+
+        Implement multi-threading to generate Fibonacci sequence
+
+        Explore thread safety when accessing shared variables</div>
+
+      <div class="codewrap">
+        <div class="codebar">
+          <span class="title">Python — Source Code</span>
+          <div class="copy"><button class="copy-btn" data-target="#code4">Copy</button></div>
+        </div>
+        <pre><code id="code4">import threading, time
+
+
+fib = [] 
+lock = threading.Lock()
+
+def generate(n): 
+    a, b = 0, 1 
+    for _ in range(n): 
+       with lock: 
+         fib.append(a) 
+         a, b = b, a + b 
+         time.sleep(0.1)
+
+def display(n): 
+    while True: 
+        with lock: 
+        print(fib) if len(fib) >= n: 
+            break time.sleep(0.2)
+
+n = 10 
+t1 = threading.Thread(target=generate, args=(n,)) 
+t2 = threading.Thread(target=display, args=(n,))
+
+t1.start() 
+t2.start()
+
+t1.join() 
+t2.join()
+
+print("Final:", fib)</code></pre>
+      </div>
+
+      <div class="codewrap" style="margin-top:12px">
+        <div class="codebar">
+          <span class="title">Sample Output</span>
+          <div class="copy"><button class="copy-btn" data-target="#out4">Copy</button></div>
+        </div>
+        <pre><code id="out4">[0]
+
+[0, 1] [0, 1, 1] ... Final: [0, 1, 1, 2, 3, 5, 8, 13, 21, 34]</code></pre>
+      </div>
+    </section>
+
+    <!-- PRACTICAL 5 -->
+    <section class="card" id="p5">
+      <h2>Practical 5 — Process Synchronization and Bounded Buffer Problem</h2>
+      <div class="aim">Aim:
+
+        Simulate producer-consumer bounded buffer using mutex and semaphore
+
+        Implement buffer control with synchronized access</div>
+
+      <div class="codewrap">
+        <div class="codebar">
+          <span class="title">Python — Source Code</span>
+          <div class="copy"><button class="copy-btn" data-target="#code5">Copy</button></div>
+        </div>
+        <pre><code id="code5">import threading, time, random
+
+
+BUFFER_SIZE = 5 , NUM_ITEMS = 5,5
+buffer = []
+
+empty = threading.Semaphore(BUFFER_SIZE) 
+full = threading.Semaphore(0) 
+mutex = threading.Lock()
+
+def producer():
+    for _ in range(NUM_ITEMS): 
+       item = random.randint(1, 100) 
+       empty.acquire() 
+       mutex.acquire() 
+       buffer.append(item) 
+       print("Produced:", item, "| Buffer:", buffer) 
+       mutex.release() 
+       full.release() 
+       time.sleep(random.uniform(0.5, 1.5))
+
+def consumer(): 
+     for _ in range(NUM_ITEMS): 
+        full.acquire() 
+        mutex.acquire() 
+        item = buffer.pop(0)
+        print("Consumed:", item, "| Buffer:", buffer) 
+        mutex.release() 
+        empty.release()
+        time.sleep(random.uniform(0.5, 1.5))
+
+t1 = threading.Thread(target=producer) 
+t2 = threading.Thread(target=consumer)
+
+t1.start()
+t2.start()
+
+t1.join() 
+t2.join()</code></pre>
+      </div>
+
+      <div class="codewrap" style="margin-top:12px">
+        <div class="codebar">
+          <span class="title">Sample Output</span>
+          <div class="copy"><button class="copy-btn" data-target="#out5">Copy</button></div>
+        </div>
+        <pre><code id="out5">Produced: 84 | Buffer: [84]
+
+Consumed: 84 | Buffer: [] Produced: 65 | Buffer: [65] Consumed: 65 | Buffer: [] Produced: 2 | Buffer: [2] Consumed: 2 | Buffer: []</code></pre>
+      </div>
+    </section>
+
+    <!--<p class="tip">PDF चाहिए? ब्राउज़र के <strong>Print</strong> ➜ <strong>Save as PDF</strong> से कर लो।</p>
+<footer>© 2025 • OS Lab Practicals • Built for quick copy</footer>-->
+
+  </div>
+  <script src="script.js" defer></script>
+</body>
+
+</html>
