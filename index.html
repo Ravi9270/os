@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Operating System ka assignment</title>
+  <title>Operating System & Data Structures Practicals</title>
   <link rel="stylesheet" href="style.css">
 </head>
 
@@ -12,162 +12,126 @@
   <div class="wrap">
     <header>
       <div>
-        <h1>Os</h1>
-        <!-- <div class="sub">Copy kar k past kar lo लेनदेन valo</div> -->
+        <h1>Copy करके paste कर लो <b>लेनदेन</b> वालो</h1>
+        <!-- <div class="sub"><h2>Copy करके paste कर लो <b>लेनदेन</b> वालो</h2></div> -->
       </div>
       <div class="bar">
         <button id="copy-all">Copy All Code</button>
         <button id="download-html">Download this Webpage (.html)</button>
-        <!--<span class="pill">Tip: Mobile पर लंबे-प्रेस से भी Copy कर सकते हो</span>-->
       </div>
     </header>
-    <!-- PRACTICAL 1 -->
-    <section class="card" id="p1">
+
+    <!-- OS PRACTICALS -->
+    <h2 class="section-title">Operating System Practicals</h2>
+
+    <!-- OS PRACTICAL 1 -->
+    <section class="card" id="os-p1">
       <h2>Practical 1 — Process communication using shared memory</h2>
-      <div class="aim">Aim:
-
-        Understand shared memory concepts in inter-process communication
-
-        Implement producer-consumer synchronization using shared memory and semaphore
-
-        Explore race conditions and how to avoid them</div>
+      <div class="aim">Aim: Understand shared memory concepts in inter-process communication</div>
 
       <div class="codewrap">
         <div class="codebar">
           <span class="title">Python — Source Code</span>
-          <div class="copy"><button class="copy-btn" data-target="#code1">Copy</button></div>
+          <div class="copy"><button class="copy-btn" data-target="#os-code1">Copy</button></div>
         </div>
-        <pre><code id="code1">from threading import Thread, Semaphore
-
-
+        <pre><code id="os-code1">from threading import Thread, Semaphore
 import random, time
 
-full = Semaphore(0) 
-empty = Semaphore(10) 
+full = Semaphore(0)
+empty = Semaphore(10)
 mutex = Semaphore(1)
 
-class ProducerThread(Thread): 
-    def init(self, buffer): 
-       Thread.init(self) 
-       self.buffer = buffer
+class ProducerThread(Thread):
+    def __init__(self, buffer):
+        Thread.__init__(self)
+        self.buffer = buffer
 
-def run(self):
-    while True:
-        empty.acquire()
-        mutex.acquire()
-        num = random.randint(0, 5)
-        self.buffer.append(num)
-        print("Produced:", num)
-        mutex.release()
-        full.release()
-        time.sleep(1)
+    def run(self):
+        while True:
+            empty.acquire()
+            mutex.acquire()
+            num = random.randint(0, 5)
+            self.buffer.append(num)
+            print("Produced:", num)
+            mutex.release()
+            full.release()
+            time.sleep(1)
 
-class ConsumerThread(Thread): 
-      def init(self, buffer): 
-           Thread.init(self) 
-           self.buffer = buffer
+class ConsumerThread(Thread):
+    def __init__(self, buffer):
+        Thread.__init__(self)
+        self.buffer = buffer
 
-def run(self):
-    while True:
-        full.acquire()
-        mutex.acquire()
-        print("Consumed:", self.buffer.pop())
-        mutex.release()
-        empty.release()
-        time.sleep(1)
+    def run(self):
+        while True:
+            full.acquire()
+            mutex.acquire()
+            item = self.buffer.pop(0)
+            print("Consumed:", item)
+            mutex.release()
+            empty.release()
+            time.sleep(1)
 
 buffer = []
-ProducerThread(buffer).start() 
+ProducerThread(buffer).start()
 ConsumerThread(buffer).start()</code></pre>
-      </div>
-
-      <div class="codewrap" style="margin-top:12px">
-        <div class="codebar">
-          <span class="title">Sample Output</span>
-          <div class="copy"><button class="copy-btn" data-target="#out1">Copy</button></div>
-        </div>
-        <pre><code id="out1">Produced 1
-
-Consumed 1 Produced 4 Consumed 4 Produced 3 Consumed 3</code></pre>
       </div>
     </section>
 
-    <!-- PRACTICAL 2 -->
-    <section class="card" id="p2">
+    <!-- OS PRACTICAL 2 -->
+    <section class="card" id="os-p2">
       <h2>Practical 2 — Process communication using message passing</h2>
-      <div class="aim">Aim:
-
-        Use message queues/pipes to solve producer-consumer problem
-
-        Compare shared memory vs message passing
-
-        Analyze blocking vs non-blocking communication</div>
+      <div class="aim">Aim: Use message queues/pipes to solve producer-consumer problem</div>
 
       <div class="codewrap">
         <div class="codebar">
           <span class="title">Python — Source Code</span>
-          <div class="copy"><button class="copy-btn" data-target="#code2">Copy</button></div>
+          <div class="copy"><button class="copy-btn" data-target="#os-code2">Copy</button></div>
         </div>
-        <pre><code id="code2">import threading, queue, time
-
+        <pre><code id="os-code2">import threading, queue, time
 
 def producer(q):
     for i in range(5):
-        msg = f"Data {i}" 
+        msg = f"Data {i}"
         q.put(msg)
-        print("Producer sent:", msg) 
+        print("Producer sent:", msg)
         time.sleep(1)
     q.put("DONE")
 
-def consumer(q): 
-    while True: 
-       msg = q.get() 
-       if msg == "DONE":  
-          break 
-    print("Consumer received:", msg)
+def consumer(q):
+    while True:
+        msg = q.get()
+        if msg == "DONE":
+            break
+        print("Consumer received:", msg)
 
-if name == "main":
-    q = queue.Queue() 
+if __name__ == "__main__":
+    q = queue.Queue()
     t1 = threading.Thread(target=producer, args=(q,))
-    t2 = threading.Thread(target=consumer, args=(q,)) 
+    t2 = threading.Thread(target=consumer, args=(q,))
     t1.start()
     t2.start()
     t1.join()
     t2.join()</code></pre>
       </div>
-
-      <div class="codewrap" style="margin-top:12px">
-        <div class="codebar">
-          <span class="title">Sample Output</span>
-          <div class="copy"><button class="copy-btn" data-target="#out2">Copy</button></div>
-        </div>
-        <pre><code id="out2">Producer sent: Data 0
-
-Consumer received: Data 0 Producer sent: Data 1 Consumer received: Data 1 Producer sent: Data 2 Consumer received: Data 2 Producer sent: Data 3 Consumer received: Data 3 Producer sent: Data 4 Consumer received: Data 4</code></pre>
-      </div>
     </section>
 
-    <!-- PRACTICAL 3 -->
-    <section class="card" id="p3">
+    <!-- OS PRACTICAL 3 -->
+    <section class="card" id="os-p3">
       <h2>Practical 3 — Threading and Single Thread Control Flow</h2>
-      <div class="aim">Aim:
-
-        Practice thread creation and lifecycle
-
-        Observe execution order, joining, and delays</div>
+      <div class="aim">Aim: Practice thread creation and lifecycle</div>
 
       <div class="codewrap">
         <div class="codebar">
           <span class="title">Python — Source Code</span>
-          <div class="copy"><button class="copy-btn" data-target="#code3">Copy</button></div>
+          <div class="copy"><button class="copy-btn" data-target="#os-code3">Copy</button></div>
         </div>
-        <pre><code id="code3">import threading, time
-
+        <pre><code id="os-code3">import threading, time
 
 def task():
-  print("Start") 
-  time.sleep(2) 
-  print("End")
+    print("Start") 
+    time.sleep(2) 
+    print("End")
 
 start = time.time()
 
@@ -187,546 +151,140 @@ task()
 task() 
 print("Sequential Time:", round(time.time() - start, 2))</code></pre>
       </div>
-
-      <div class="codewrap" style="margin-top:12px">
-        <div class="codebar">
-          <span class="title">Sample Output</span>
-          <div class="copy"><button class="copy-btn" data-target="#out3">Copy</button></div>
-        </div>
-        <pre><code id="out3">Start
-
-Start End End Threaded Time: 2.08 Sequential Time: 4.14</code></pre>
-      </div>
     </section>
 
-    <!-- PRACTICAL 4 -->
-    <section class="card" id="p4">
+    <!-- OS PRACTICAL 4 -->
+    <section class="card" id="os-p4">
       <h2>Practical 4 — Multi-threading and Fibonacci Generation</h2>
-      <div class="aim">Aim:
-
-        Implement multi-threading to generate Fibonacci sequence
-
-        Explore thread safety when accessing shared variables</div>
+      <div class="aim">Aim: Implement multi-threading to generate Fibonacci sequence</div>
 
       <div class="codewrap">
         <div class="codebar">
           <span class="title">Python — Source Code</span>
-          <div class="copy"><button class="copy-btn" data-target="#code4">Copy</button></div>
+          <div class="copy"><button class="copy-btn" data-target="#os-code4">Copy</button></div>
         </div>
-        <pre><code id="code4">import threading, time
+        <pre><code id="os-code4">import threading, time
 
-
-fib = [] 
+fib = []
 lock = threading.Lock()
 
-def generate(n): 
-    a, b = 0, 1 
-    for _ in range(n): 
-       with lock: 
-         fib.append(a) 
-         a, b = b, a + b 
-         time.sleep(0.1)
+def generate(n):
+    a, b = 0, 1
+    for _ in range(n):
+        with lock:
+            fib.append(a)
+            a, b = b, a + b
+        time.sleep(0.1)
 
-def display(n): 
-    while True: 
-        with lock: 
-        print(fib) if len(fib) >= n: 
-            break time.sleep(0.2)
+def display(n):
+    while True:
+        with lock:
+            print(fib)
+            if len(fib) >= n:
+                break
+        time.sleep(0.2)
 
-n = 10 
-t1 = threading.Thread(target=generate, args=(n,)) 
+n = 10
+t1 = threading.Thread(target=generate, args=(n,))
 t2 = threading.Thread(target=display, args=(n,))
 
-t1.start() 
+t1.start()
 t2.start()
 
-t1.join() 
+t1.join()
 t2.join()
 
 print("Final:", fib)</code></pre>
       </div>
-
-      <div class="codewrap" style="margin-top:12px">
-        <div class="codebar">
-          <span class="title">Sample Output</span>
-          <div class="copy"><button class="copy-btn" data-target="#out4">Copy</button></div>
-        </div>
-        <pre><code id="out4">[0]
-
-[0, 1] [0, 1, 1] ... Final: [0, 1, 1, 2, 3, 5, 8, 13, 21, 34]</code></pre>
-      </div>
     </section>
 
-    <!-- PRACTICAL 5 -->
-    <section class="card" id="p5">
+    <!-- OS PRACTICAL 5 -->
+    <section class="card" id="os-p5">
       <h2>Practical 5 — Process Synchronization and Bounded Buffer Problem</h2>
-      <div class="aim">Aim:
-
-        Simulate producer-consumer bounded buffer using mutex and semaphore
-
-        Implement buffer control with synchronized access</div>
+      <div class="aim">Aim: Simulate producer-consumer bounded buffer using mutex and semaphore</div>
 
       <div class="codewrap">
         <div class="codebar">
           <span class="title">Python — Source Code</span>
-          <div class="copy"><button class="copy-btn" data-target="#code5">Copy</button></div>
+          <div class="copy"><button class="copy-btn" data-target="#os-code5">Copy</button></div>
         </div>
-        <pre><code id="code5">import threading, time, random
+        <pre><code id="os-code5">import threading, time, random
 
-
-BUFFER_SIZE = 5 , NUM_ITEMS = 5,5
+BUFFER_SIZE = 5
+NUM_ITEMS = 5
 buffer = []
 
-empty = threading.Semaphore(BUFFER_SIZE) 
-full = threading.Semaphore(0) 
+empty = threading.Semaphore(BUFFER_SIZE)
+full = threading.Semaphore(0)
 mutex = threading.Lock()
 
 def producer():
-    for _ in range(NUM_ITEMS): 
-       item = random.randint(1, 100) 
-       empty.acquire() 
-       mutex.acquire() 
-       buffer.append(item) 
-       print("Produced:", item, "| Buffer:", buffer) 
-       mutex.release() 
-       full.release() 
-       time.sleep(random.uniform(0.5, 1.5))
+    for _ in range(NUM_ITEMS):
+        item = random.randint(1, 100)
+        empty.acquire()
+        mutex.acquire()
+        buffer.append(item)
+        print("Produced:", item, "| Buffer:", buffer)
+        mutex.release()
+        full.release()
+        time.sleep(random.uniform(0.5, 1.5))
 
-def consumer(): 
-     for _ in range(NUM_ITEMS): 
-        full.acquire() 
-        mutex.acquire() 
+def consumer():
+    for _ in range(NUM_ITEMS):
+        full.acquire()
+        mutex.acquire()
         item = buffer.pop(0)
-        print("Consumed:", item, "| Buffer:", buffer) 
-        mutex.release() 
+        print("Consumed:", item, "| Buffer:", buffer)
+        mutex.release()
         empty.release()
         time.sleep(random.uniform(0.5, 1.5))
 
-t1 = threading.Thread(target=producer) 
+t1 = threading.Thread(target=producer)
 t2 = threading.Thread(target=consumer)
 
 t1.start()
 t2.start()
 
-t1.join() 
+t1.join()
 t2.join()</code></pre>
-      </div>
-
-      <div class="codewrap" style="margin-top:12px">
-        <div class="codebar">
-          <span class="title">Sample Output</span>
-          <div class="copy"><button class="copy-btn" data-target="#out5">Copy</button></div>
-        </div>
-        <pre><code id="out5">Produced: 84 | Buffer: [84]
-
-Consumed: 84 | Buffer: [] Produced: 65 | Buffer: [65] Consumed: 65 | Buffer: [] Produced: 2 | Buffer: [2] Consumed: 2 | Buffer: []</code></pre>
       </div>
     </section>
 
 
 
 
-
-
-
-      <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br>
-
-
-
-<p><h1>Toc</h1></p>
-
-
-
-
-
-
-
-     <!-- PRACTICAL 1 -->
-    <section class="card" id="p1">
-      <h2>Practical 1 -   Aim: Write a Python program to perform basic set operations: union, intersection, and difference.</h2>
-      
-      <div class="codewrap">
-        <div class="codebar">
-          <span class="title">Python — Source Code</span>
-          <div class="copy"><button class="copy-btn" data-target="#code1">Copy</button></div>
-        </div>
-        <pre><code id="code1"># Practical 1
-
-A = {'a', 'b', 'c'}
-B = {'b', 'c', 'd'}
-
-print("Union :", A | B)
-print("Intersection :", A & B)
-print("Difference :", A - B)
-</code></pre>
-      </div>
-
-
-     <!-- PRACTICAL 2 -->
-    <section class="card" id="p1">
-      <h2>Practical 2 -  Write a Python program to represent a
-(a) Graph using an adjacency list</h2>
-
-      <div class="codewrap">
-        <div class="codebar">
-          <span class="title">Python — Source Code</span>
-          <div class="copy"><button class="copy-btn" data-target="#code1">Copy</button></div>
-        </div>
-        <pre><code id="code1"># Practical 2(a)
-
-graph = {
-    'A': ['B', 'C'],
-    'B': ['A', 'D'],
-    'C': ['A', 'D'],
-    'D': ['B', 'C']
-}
-
-for node in graph:
-    print(node, "->", graph[node])
-
-</code></pre>
-      </div>
-
- 
-
-
-     <!-- PRACTICAL 2 b -->
-    <section class="card" id="p1">
-      <h2>Practical 2(b) - Tree Representation</h2>
-
-      <div class="codewrap">
-        <div class="codebar">
-          <span class="title">Python — Source Code</span>
-          <div class="copy"><button class="copy-btn" data-target="#code1">Copy</button></div>
-        </div>
-        <pre><code id="code1"># Practical 2(b)
-
-tree = {
-    'A': ['B', 'C'],
-    'B': ['D', 'E'],
-    'C': [],
-    'D': [],
-    'E': []
-}
-
-for parent in tree:
-    print(parent, "->", tree[parent])
-
-</code></pre>
-      </div>
-
-
-
-
-
-
-
-     <!-- PRACTICAL 3 -->
-    <section class="card" id="p1">
-      <h2>Practical 3 -Design and implement a finite state machine (FSM) that accepts or rejects strings based on states, alphabet, transition function, start state, and accepting state.</h2>
-
-      <div class="codewrap">
-        <div class="codebar">
-          <span class="title">Python — Source Code</span>
-          <div class="copy"><button class="copy-btn" data-target="#code1">Copy</button></div>
-        </div>
-        <pre><code id="code1"># Practical 3
-
-class FiniteStateMachine:
-    def __init__(self):
-        self.states = ['q0', 'q1', 'q2']
-        self.alphabet = ['0', '1']
-        self.transition = {
-            'q0': {'0': 'q1', '1': 'q0'},
-            'q1': {'0': 'q1', '1': 'q2'},
-            'q2': {'0': 'q2', '1': 'q2'}
-        }
-        self.initial_state = 'q0'
-        self.accepting_state = 'q2'
-
-    def run(self, input_string):
-        current_state = self.initial_state
-        for symbol in input_string:
-            current_state = self.transition[current_state][symbol]
-        return current_state == self.accepting_state
-
-
-fsm = FiniteStateMachine()
-input_strings = ['101', '1010', '1100', '111']
-
-for input_string in input_strings:
-    result = fsm.run(input_string)
-    print(f"Input: {input_string} → {'Accepted' if result else 'Rejected'}")
-
-</code></pre>
-      </div>
-
-
-
-
-
-  <!-- PRACTICAL 4 -->
-    <section class="card" id="p1">
-      <h2>Practical 4 -Write a Python program to implement a Non-deterministic Finite Automata (NFA) that accepts strings ending with 'ab' over the alphabet {a, b}.</h2>
-
-      <div class="codewrap">
-        <div class="codebar">
-          <span class="title">Python — Source Code</span>
-          <div class="copy"><button class="copy-btn" data-target="#code1">Copy</button></div>
-        </div>
-        <pre><code id="code1"># Practical 4
-
-nfa = {
-    'q0': {'a': ['q0', 'q1'], 'b': ['q0']},
-    'q1': {'b': ['q2']},
-    'q2': {}
-}
-
-def nfa_accepts(string):
-    current_states = ['q0']
-    for symbol in string:
-        next_states = []
-        for state in current_states:
-            if symbol in nfa[state]:
-                next_states.extend(nfa[state][symbol])
-        current_states = next_states
-    return 'q2' in current_states
-
-
-test_strings = ['ab', 'aab', 'baba', 'aaabb', 'abb']
-
-for s in test_strings:
-    if nfa_accepts(s):
-        print(f"String '{s}' is Accepted")
-    else:
-        print(f"String '{s}' is Rejected")
-
-</code></pre>
-      </div>
-
-
-
-
-
-  <!-- PRACTICAL 5 -->
-    <section class="card" id="p1">
-      <h2>Practical 5 -To convert a given NFA (Non-deterministic Finite Automaton) into an equivalent DFA (Deterministic Finite Automaton) using the subset construction method.</h2>
-
-      <div class="codewrap">
-        <div class="codebar">
-          <span class="title">Python — Source Code</span>
-          <div class="copy"><button class="copy-btn" data-target="#code1">Copy</button></div>
-        </div>
-        <pre><code id="code1"># Practical 5
-from collections import deque
-
-nfa = {
-    'q0': {'a': ['q0', 'q1'], 'b': ['q0']},
-    'q1': {'b': ['q2']},
-    'q2': {}
-}
-
-states = list(nfa.keys())
-alphabet = ['a', 'b']
-start_state = 'q0'
-final_states = ['q2']
-
-def nfa_to_dfa(nfa, start_state, final_states, alphabet):
-    dfa = {}
-    queue = deque()
-    visited = set()
-
-    start = frozenset([start_state])
-    queue.append(start)
-    visited.add(start)
-
-    while queue:
-        current = queue.popleft()
-        dfa[current] = {}
-
-        for symbol in alphabet:
-            next_states = set()
-            for state in current:
-                if symbol in nfa[state]:
-                    next_states.update(nfa[state][symbol])
-            next_states = frozenset(next_states)
-            dfa[current][symbol] = next_states
-
-            if next_states not in visited:
-                visited.add(next_states)
-                queue.append(next_states)
-
-    return dfa
-
-
-dfa = nfa_to_dfa(nfa, start_state, final_states, alphabet)
-print("DFA Transition Table:")
-for state, trans in dfa.items():
-    print(state, ":", trans)
-
-</code></pre>
-      </div>
-
-
-
-
-
-
-
-
-  <!-- PRACTICAL 6 -->
-    <section class="card" id="p1">
-      <h2>Practical 6 -To design and implement a Mealy Machine in Python and simulate its working.</h2>
-
-      <div class="codewrap">
-        <div class="codebar">
-          <span class="title">Python — Source Code</span>
-          <div class="copy"><button class="copy-btn" data-target="#code1">Copy</button></div>
-        </div>
-        <pre><code id="code1"># Practical 6
-
-class MealyMachine:
-    def __init__(self):
-        self.transitions = {
-            ('q0', '0'): ('q0', '0'),
-            ('q0', '1'): ('q1', '1'),
-            ('q1', '0'): ('q0', '1'),
-            ('q1', '1'): ('q1', '0')
-        }
-        self.start_state = 'q0'
-
-    def process_input(self, input_string):
-        state = self.start_state
-        output = ""
-        for symbol in input_string:
-            state, out = self.transitions[(state, symbol)]
-            output += out
-        return output
-
-
-mealy = MealyMachine()
-inp = "10101"
-print("Input String :", inp)
-print("Output String :", mealy.process_input(inp))
-
-</code></pre>
-      </div>
-
-
-
-
-
-
-      <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br>
-
-<p><h1>DS</h1></p>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    <!-- PRACTICAL 1 -->
-    <section class="card" id="p1">
+    <br>   <br> <br>   <br>
+    <br>   <br>
+    <br>   <br> <br>   <br>
+    <br>   <br>
+    <br>   <br>
+    <br>   <br>
+    <br>   <br>
+    <br>
+    <br>
+    <br>   <br>
+    <br>   <br>
+    <br>
+    <br>
+    <br>   <br>
+    <br>   <br>
+    <br>   <br>
+    <br>   <br>
+    <br>
+    <br>
+    <!-- DS PRACTICALS -->
+    <h2 class="section-title">Data Structures Practicals</h2>
+
+    <!-- DS PRACTICAL 1 -->
+    <section class="card" id="ds-p1">
       <h2>Practical 1 — Insert an element at a specific position</h2>
-      <!-- <div class="aim">Aim:
-
-        Understand shared memory concepts in inter-process communication
-
-        Implement producer-consumer synchronization using shared memory and semaphore
-
-        Explore race conditions and how to avoid them</div> -->
 
       <div class="codewrap">
         <div class="codebar">
-          <span class="title">Python — Source Code</span>
-          <div class="copy"><button class="copy-btn" data-target="#code1">Copy</button></div>
+          <span class="title">C — Source Code</span>
+          <div class="copy"><button class="copy-btn" data-target="#ds-code1">Copy</button></div>
         </div>
-        <pre><code id="code1">
-#include <stdio.h>
+        <pre><code id="ds-code1">#include .stdio.h.
 int main() {
     int arr[100] = {10, 20, 30, 40, 50};
     int size = 5;
@@ -745,39 +303,20 @@ int main() {
         printf("%d ", arr[i]);
     }
     return 0;
-}
-</code></pre>
+}</code></pre>
       </div>
-
-      <!-- <div class="codewrap" style="margin-top:12px">
-        <div class="codebar">
-          <span class="title">Sample Output</span>
-          <div class="copy"><button class="copy-btn" data-target="#out1">Copy</button></div>
-        </div>
-        <pre><code id="out1">Produced 1
-
-Consumed 1 Produced 4 Consumed 4 Produced 3 Consumed 3</code></pre>
-      </div> -->
     </section>
 
-    <!-- PRACTICAL 2 -->
-    <section class="card" id="p2">
-      <h2>Practical 2. Delete an element</h2>
-      <!-- <div class="aim">Aim:
-
-        Use message queues/pipes to solve producer-consumer problem
-
-        Compare shared memory vs message passing
-
-        Analyze blocking vs non-blocking communication</div> -->
+    <!-- DS PRACTICAL 2 -->
+    <section class="card" id="ds-p2">
+      <h2>Practical 2 — Delete an element</h2>
 
       <div class="codewrap">
         <div class="codebar">
-          <span class="title">Python — Source Code</span>
-          <div class="copy"><button class="copy-btn" data-target="#code2">Copy</button></div>
+          <span class="title">C — Source Code</span>
+          <div class="copy"><button class="copy-btn" data-target="#ds-code2">Copy</button></div>
         </div>
-        <pre><code id="code2"> 
-#include <stdio.h>
+        <pre><code id="ds-code2">#include .stdio.h.
 int main() {
     int arr[100] = {10, 20, 30, 40, 50};
     int size = 5;
@@ -793,37 +332,20 @@ int main() {
         printf("%d ", arr[i]);
     }
     return 0;
-}
-
-        </code></pre>
+}</code></pre>
       </div>
-
-      <!-- <div class="codewrap" style="margin-top:12px">
-        <div class="codebar">
-          <span class="title">Sample Output</span>
-          <div class="copy"><button class="copy-btn" data-target="#out2">Copy</button></div>
-        </div>
-        <pre><code id="out2">Producer sent: Data 0
-
-Consumer received: Data 0 Producer sent: Data 1 Consumer received: Data 1 Producer sent: Data 2 Consumer received: Data 2 Producer sent: Data 3 Consumer received: Data 3 Producer sent: Data 4 Consumer received: Data 4</code></pre>
-      </div> -->
     </section>
 
-    <!-- PRACTICAL 3 -->
-    <section class="card" id="p3">
-      <h2>Practical 3. Search for an element</h2>
-      <!-- <div class="aim">Aim:
-
-        Practice thread creation and lifecycle
-
-        Observe execution order, joining, and delays</div> -->
+    <!-- DS PRACTICAL 3 -->
+    <section class="card" id="ds-p3">
+      <h2>Practical 3 — Search for an element</h2>
 
       <div class="codewrap">
         <div class="codebar">
-          <span class="title">Python — Source Code</span>
-          <div class="copy"><button class="copy-btn" data-target="#code3">Copy</button></div>
+          <span class="title">C — Source Code</span>
+          <div class="copy"><button class="copy-btn" data-target="#ds-code3">Copy</button></div>
         </div>
-        <pre><code id="code3">#include <stdio.h>
+        <pre><code id="ds-code3">#include  .stdio.h.
 int main() {
     int arr[100] = {10, 20, 30, 40, 50};
     int n = 5;
@@ -837,38 +359,21 @@ int main() {
     }
     printf("Element %d not found\n", key);
     return 0;
-}
-</code></pre>
+}</code></pre>
       </div>
-
-      <!-- <div class="codewrap" style="margin-top:12px">
-        <div class="codebar">
-          <span class="title">Sample Output</span>
-          <div class="copy"><button class="copy-btn" data-target="#out3">Copy</button></div>
-        </div>
-        <pre><code id="out3">Start
-
-Start End End Threaded Time: 2.08 Sequential Time: 4.14</code></pre>
-      </div> -->
     </section>
 
-    <!-- PRACTICAL 4 -->
-    <section class="card" id="p4">
+    <!-- DS PRACTICAL 4 -->
+    <section class="card" id="ds-p4">
       <h2>Practical 4 — Create a single linked list</h2>
-      <!-- <div class="aim">Aim:
-
-        Implement multi-threading to generate Fibonacci sequence
-
-        Explore thread safety when accessing shared variables</div> -->
 
       <div class="codewrap">
         <div class="codebar">
-          <span class="title">Python — Source Code</span>
-          <div class="copy"><button class="copy-btn" data-target="#code4">Copy</button></div>
+          <span class="title">C — Source Code</span>
+          <div class="copy"><button class="copy-btn" data-target="#ds-code4">Copy</button></div>
         </div>
-        <pre><code id="code4">
-#include <stdio.h>
-#include <stdlib.h>
+        <pre><code id="ds-code4">#include .stdio.h.
+#include .stdlib.h.
 
 struct Node {
     int data;
@@ -899,32 +404,21 @@ int main() {
     }
     printf("NULL\n");
     return 0;
-}
-</code></pre>
+}</code></pre>
       </div>
-
-      <!-- <div class="codewrap" style="margin-top:12px">
-        <div class="codebar">
-          <span class="title">Sample Output</span>
-          <div class="copy"><button class="copy-btn" data-target="#out4">Copy</button></div>
-        </div>
-        <pre><code id="out4">[0]
-
-[0, 1] [0, 1, 1] ... Final: [0, 1, 1, 2, 3, 5, 8, 13, 21, 34]</code></pre>
-      </div> -->
     </section>
 
-    <!-- PRACTICAL 5 -->
-    <section class="card" id="p5">
-      <h2>Practical 5 — Insert a node at beginning, end, and specific position ....linked list</h2>
+    <!-- DS PRACTICAL 5 -->
+    <section class="card" id="ds-p5">
+      <h2>Practical 5 — Insert a node at beginning, end, and specific position</h2>
+
       <div class="codewrap">
         <div class="codebar">
-          <span class="title">Python — Source Code</span>
-          <div class="copy"><button class="copy-btn" data-target="#code5">Copy</button></div>
+          <span class="title">C — Source Code</span>
+          <div class="copy"><button class="copy-btn" data-target="#ds-code5">Copy</button></div>
         </div>
-        <pre><code id="code5">
-#include <stdio.h>
-#include <stdlib.h>
+        <pre><code id="ds-code5">#include .stdio.h.
+#include .stdlib.h.
 
 struct Node {
     int data;
@@ -960,35 +454,21 @@ int main() {
     }
     printf("NULL\n");
     return 0;
-}
-</code></pre>
+}</code></pre>
       </div>
-
     </section>
 
+    <!-- DS PRACTICAL 6 -->
+    <section class="card" id="ds-p6">
+      <h2>Practical 6 — Delete a node from a given position</h2>
 
-
-
-
-
-
-
-
-
-
-
-
-    <!-- PRACTICAL 6 -->
-    <section class="card" id="p5">
-      <h2>Practical 6 —Delete a node from a given position.  linked list</h2>
       <div class="codewrap">
         <div class="codebar">
-          <span class="title">Python — Source Code</span>
-          <div class="copy"><button class="copy-btn" data-target="#code5">Copy</button></div>
+          <span class="title">C — Source Code</span>
+          <div class="copy"><button class="copy-btn" data-target="#ds-code6">Copy</button></div>
         </div>
-        <pre><code id="code5">
-#include <stdio.h>
-#include <stdlib.h>
+        <pre><code id="ds-code6">#include .stdio.h.
+#include .stdlib.h.
 
 struct Node {
     int data;
@@ -1026,32 +506,20 @@ int main() {
     }
     printf("NULL\n");
     return 0;
-}
-
-</code></pre>
+}</code></pre>
       </div>
-
-
-
     </section>
 
-    
+    <!-- DS PRACTICAL 7 -->
+    <section class="card" id="ds-p7">
+      <h2>Practical 7 — Push, Pop, and Peek operations on a Stack using arrays</h2>
 
-
-
-
-
-
-     <!-- PRACTICAL 1 -->
-    <section class="card" id="p1">
-      <h2>Practical 7 -  To implement Push, Pop, and Peek operations on a Stack using arrays.</h2>
-      
       <div class="codewrap">
         <div class="codebar">
-          <span class="title">Python — Source Code</span>
-          <div class="copy"><button class="copy-btn" data-target="#code1">Copy</button></div>
+          <span class="title">C — Source Code</span>
+          <div class="copy"><button class="copy-btn" data-target="#ds-code7">Copy</button></div>
         </div>
-        <pre><code id="code1">#include <stdio.h>
+        <pre><code id="ds-code7">#include .stdio.h.
 #define SIZE 5
 
 int stack[SIZE];
@@ -1101,24 +569,20 @@ int main() {
         }
     }
     return 0;
-}
-
-</code></pre>
+}</code></pre>
       </div>
+    </section>
 
+    <!-- DS PRACTICAL 8 -->
+    <section class="card" id="ds-p8">
+      <h2>Practical 8 — Enqueue, Dequeue, and Display operations on a Queue using arrays</h2>
 
-
-
-     <!-- PRACTICAL 1 -->
-    <section class="card" id="p1">
-      <h2>Practical 8 -  To implement Enqueue, Dequeue, and Display operations on a Queue using arrays</h2>
-      
       <div class="codewrap">
         <div class="codebar">
-          <span class="title">Python — Source Code</span>
-          <div class="copy"><button class="copy-btn" data-target="#code1">Copy</button></div>
+          <span class="title">C — Source Code</span>
+          <div class="copy"><button class="copy-btn" data-target="#ds-code8">Copy</button></div>
         </div>
-        <pre><code id="code1">#include <stdio.h>
+        <pre><code id="ds-code8">#include .stdio.h.
 #define SIZE 5
 
 int queue[SIZE];
@@ -1173,28 +637,21 @@ int main() {
         }
     }
     return 0;
-}
-
-</code></pre>
+}</code></pre>
       </div>
+    </section>
 
+    <!-- DS PRACTICAL 9 -->
+    <section class="card" id="ds-p9">
+      <h2>Practical 9 — Create a Binary Search Tree and display using inorder traversal</h2>
 
-
-
-
-
-
-     <!-- PRACTICAL 1 -->
-    <section class="card" id="p1">
-      <h2>Practical 9 - To create a Binary Search Tree by inserting nodes and displaying it using inorder traversal.</h2>
-      
       <div class="codewrap">
         <div class="codebar">
-          <span class="title">Python — Source Code</span>
-          <div class="copy"><button class="copy-btn" data-target="#code1">Copy</button></div>
+          <span class="title">C — Source Code</span>
+          <div class="copy"><button class="copy-btn" data-target="#ds-code9">Copy</button></div>
         </div>
-        <pre><code id="code1">#include <stdio.h>
-#include <stdlib.h>
+        <pre><code id="ds-code9">#include .stdio.h.
+#include .stdlib.h.
 
 struct Node {
     int data;
@@ -1239,39 +696,13 @@ int main() {
     printf("Inorder Traversal of BST: ");
     inorder(root);
     return 0;
-}
-
-</code></pre>
+}</code></pre>
       </div>
+    </section>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    <!--<p class="tip">PDF चाहिए? ब्राउज़र के <strong>Print</strong> ➜ <strong>Save as PDF</strong> से कर लो।</p>
-<footer>© 2025 • OS Lab Practicals • Built for quick copy</footer>-->
+    
 
   </div>
   <script src="script.js" defer></script>
 </body>
-
 </html>
